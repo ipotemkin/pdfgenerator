@@ -33,7 +33,7 @@ install-pipx:
 		exit 1; \
 	fi
 	pipx install .
-	@echo "Приложение установлено! Запустите командой: pdfgenerator"
+	@echo "Приложение установлено! Запустите командой: pdfgen"
 
 build: install
 	@echo "Сборка для текущей ОС (один файл)..."

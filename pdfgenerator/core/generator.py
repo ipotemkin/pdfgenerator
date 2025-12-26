@@ -15,29 +15,33 @@ if platform.system() == "Darwin":
             lib_paths = [app_dir]
     else:
         lib_paths = []
-    
+
     # Добавляем пути Homebrew
     brew_prefix = os.environ.get("HOMEBREW_PREFIX", "/opt/homebrew")
     if os.path.exists(f"{brew_prefix}/lib"):
         lib_paths.append(f"{brew_prefix}/lib")
-    
+
     # Устанавливаем переменные окружения
     if lib_paths:
         lib_path = ":".join(lib_paths)
         if "DYLD_LIBRARY_PATH" in os.environ:
-            os.environ["DYLD_LIBRARY_PATH"] = f"{lib_path}:{os.environ['DYLD_LIBRARY_PATH']}"
+            os.environ["DYLD_LIBRARY_PATH"] = (
+                f"{lib_path}:{os.environ['DYLD_LIBRARY_PATH']}"
+            )
         else:
             os.environ["DYLD_LIBRARY_PATH"] = lib_path
-        
+
         if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
-            os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = f"{lib_path}:{os.environ['DYLD_FALLBACK_LIBRARY_PATH']}"
+            os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = (
+                f"{lib_path}:{os.environ['DYLD_FALLBACK_LIBRARY_PATH']}"
+            )
         else:
             os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = lib_path
 
 try:
     from weasyprint import CSS, HTML  # type: ignore
     from weasyprint.text.fonts import FontConfiguration  # type: ignore
-except ImportError as e:
+except ImportError:
     print("Ошибка: библиотека WeasyPrint не установлена.")
     print("Установите её командой: pip install weasyprint")
     if platform.system() == "Darwin":

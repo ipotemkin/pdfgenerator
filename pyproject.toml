@@ -31,10 +31,14 @@ dependencies = [
 ]
 
 [project.scripts]
-pdfgenerator = "main:main"
+pdfgen = "pdfgenerator.cli:main"
 
 [tool.setuptools]
-packages = ["pdfgenerator"]
+# Автоматическое обнаружение всех пакетов
+packages = {find = {}}
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
 
 [tool.black]
 line-length = 80

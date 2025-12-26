@@ -5,6 +5,7 @@ venv/
 output/*
 dist/
 build/
+pdfgenerator.egg-info/
 
 .mypy_cache/
 .ruff_cache/
