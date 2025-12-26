@@ -1,2 +1,8 @@
 prompts/
 venv/
+output/*
+
+.mypy_cache/
+.ruff_cache/
+
+__pycache__/
