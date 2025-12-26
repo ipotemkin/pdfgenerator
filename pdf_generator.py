@@ -63,10 +63,10 @@ class PDFGenerator:
         )
 
     def get_data_files(self) -> list[Path]:
-        """Получить список всех CSV и JSON файлов из директории data."""
+        """Получить список всех CSV, JSON и XLSX файлов из директории data."""
         data_files: list[Path] = []
         if self.data_dir.exists():
-            for ext in ["*.csv", "*.json"]:
+            for ext in ["*.csv", "*.json", "*.xlsx"]:
                 data_files.extend(self.data_dir.glob(ext))
         return sorted(data_files)
 
@@ -78,7 +78,7 @@ class PDFGenerator:
         return sorted(templates)
 
     def load_data_file(self, file_path: Path) -> list[dict[str, Any]]:
-        """Загрузить данные из CSV или JSON файла."""
+        """Загрузить данные из CSV, JSON или XLSX файла."""
         if file_path.suffix.lower() == ".json":
             with open(file_path, encoding="utf-8") as f:
                 data: Any = json.load(f)
@@ -104,6 +104,19 @@ class PDFGenerator:
                     for row in reader:
                         csv_data.append(dict(row))
                 return csv_data
+
+        elif file_path.suffix.lower() == ".xlsx":
+            if PANDAS_AVAILABLE:
+                # Читаем первый лист Excel файла
+                df = pd.read_excel(file_path, engine="openpyxl")
+                records = df.to_dict("records")
+                return cast(list[dict[str, Any]], records)
+            else:
+                print(
+                    "Ошибка: для чтения XLSX файлов требуется pandas. "
+                    "Установите: pip install pandas openpyxl"
+                )
+                return []
 
         return []
 
@@ -261,8 +274,8 @@ def main():
     # Проверяем наличие файлов
     if not data_files:
         print(
-            "\nОшибка: не найдено ни одного файла данных (CSV/JSON) "
-            "в директории 'data'"
+            "\nОшибка: не найдено ни одного файла данных "
+            "(CSV/JSON/XLSX) в директории 'data'"
         )
         print("Пожалуйста, добавьте файлы данных в директорию 'data'")
         return
