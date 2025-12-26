@@ -1,4 +1,4 @@
-.PHONY: help install build build-dir clean test check build-windows build-linux build-macos
+.PHONY: help install install-pipx build build-dir clean test check build-windows build-linux build-macos
 
 # Переменные
 PYTHON := python3
@@ -9,6 +9,7 @@ MAIN_FILE := main.py
 help:
 	@echo "Доступные команды:"
 	@echo "  make install        - Установить зависимости"
+	@echo "  make install-pipx   - Установить через pipx (рекомендуется)"
 	@echo "  make build          - Собрать один исполняемый файл (может не работать с WeasyPrint)"
 	@echo "  make build-dir      - Собрать в папку (рекомендуется для WeasyPrint)"
 	@echo "  make build-windows  - Собрать исполняемый файл для Windows"
@@ -21,6 +22,18 @@ help:
 install:
 	$(PIP) install -r requirements.txt
 	$(PIP) install pyinstaller
+
+install-pipx:
+	@echo "Установка через pipx..."
+	@if ! command -v pipx >/dev/null 2>&1; then \
+		echo "pipx не установлен. Установите его:"; \
+		echo "  python3 -m pip install --user pipx"; \
+		echo "  python3 -m pipx ensurepath"; \
+		echo "Или через Homebrew: brew install pipx"; \
+		exit 1; \
+	fi
+	pipx install .
+	@echo "Приложение установлено! Запустите командой: pdfgenerator"
 
 build: install
 	@echo "Сборка для текущей ОС (один файл)..."

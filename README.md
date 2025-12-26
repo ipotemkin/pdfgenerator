@@ -25,6 +25,43 @@ pdfgenerator/
 
 ## Установка
 
+### Установка через pipx (рекомендуется)
+
+pipx устанавливает приложение в изолированное окружение и создает глобальную команду `pdfgenerator`:
+
+```bash
+# Установите pipx, если еще не установлен
+# macOS/Linux:
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+
+# Или через Homebrew (macOS):
+brew install pipx
+
+# Установите приложение из текущей директории:
+pipx install .
+
+# Или установите из Git репозитория:
+# pipx install git+https://github.com/yourusername/pdfchecker.git
+```
+
+После установки вы можете запускать приложение просто командой:
+```bash
+pdfgenerator
+```
+
+**Обновление приложения:**
+```bash
+pipx upgrade pdfgenerator
+```
+
+**Удаление приложения:**
+```bash
+pipx uninstall pdfgenerator
+```
+
+### Установка через pip (для разработки)
+
 1. Установите зависимости:
 ```bash
 pip install -r requirements.txt
@@ -41,6 +78,10 @@ pip install -r requirements.txt
 2. Поместите HTML-шаблоны в директорию `templates/`
 3. Запустите скрипт:
 ```bash
+# Если установлено через pipx:
+pdfgenerator
+
+# Или напрямую через Python:
 python main.py
 ```
 
@@ -65,6 +106,8 @@ make install
 Это установит все зависимости, включая PyInstaller.
 
 ### Сборка для текущей ОС
+
+Запускается под работающим виртуальным окуржением!!!
 
 **Рекомендуется (сборка в папку):**
 ```bash
@@ -94,6 +137,8 @@ make build-windows  # Для Windows (требуется Linux с wine или Wi
 ```
 
 ### Требования для работы исполняемого файла
+
+Запускается из системы без активации виртуального окружения.
 
 Исполняемый файл требует установки системных библиотек на целевой машине:
 
