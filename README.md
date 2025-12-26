@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ```
 
 2. Убедитесь, что у вас установлены системные зависимости для WeasyPrint:
-   - **macOS**: `brew install cairo pango gdk-pixbuf libffi`
+   - **macOS**: `brew install cairo pango gdk-pixbuf libffi glib`
    - **Windows**: WeasyPrint должен работать из коробки
    - **Linux**: `sudo apt-get install python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0`
 
@@ -54,6 +54,8 @@ python main.py
 
 Проект включает Makefile для сборки исполняемых файлов для разных платформ.
 
+**Важно:** WeasyPrint требует системные библиотеки (cairo, pango, gobject), которые не могут быть полностью включены в один исполняемый файл. Рекомендуется использовать сборку в папку (`--onedir`) вместо одного файла (`--onefile`).
+
 ### Установка инструментов сборки
 
 ```bash
@@ -64,25 +66,71 @@ make install
 
 ### Сборка для текущей ОС
 
+**Рекомендуется (сборка в папку):**
+```bash
+make build-dir
+```
+
+**Альтернатива (один файл, может не работать):**
 ```bash
 make build
 ```
 
 ### Сборка для конкретной платформы
 
+**macOS:**
 ```bash
-make build-windows  # Для Windows (требуется Linux с wine или Windows)
-make build-linux    # Для Linux (требуется Linux)
-make build-macos    # Для macOS (требуется macOS)
+make build-macos      # Сборка исполняемого файла
 ```
 
-Исполняемые файлы будут созданы в директории `dist/`.
+**Linux:**
+```bash
+make build-linux
+```
+
+**Windows:**
+```bash
+make build-windows  # Для Windows (требуется Linux с wine или Windows)
+```
+
+### Требования для работы исполняемого файла
+
+Исполняемый файл требует установки системных библиотек на целевой машине:
+
+- **macOS**: `brew install cairo pango gdk-pixbuf libffi glib`
+- **Linux**: `sudo apt-get install python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0`
+- **Windows**: Обычно работает из коробки, но может потребоваться установка GTK+
 
 ### Очистка временных файлов
 
 ```bash
 make clean
 ```
+
+### Решение проблем со сборкой
+
+Если при запуске исполняемого файла возникает ошибка:
+```
+OSError: cannot load library 'libgobject-2.0-0'
+```
+
+Это означает, что системные библиотеки WeasyPrint не найдены. Решения:
+
+1. **Используйте сборку в папку** (`make build-dir`) вместо одного файла
+
+2. **Установите системные библиотеки** на целевой машине:
+   - macOS: `brew install cairo pango gdk-pixbuf libffi glib glib`
+   - Linux: `sudo apt-get install libcairo2 libpango-1.0-0 libgobject-2.0-0`
+
+3. **Установите переменные окружения** (macOS):
+   ```bash
+   export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
+   export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_FALLBACK_LIBRARY_PATH
+   ./dist/pdfgenerator/pdfgenerator
+   ```
+
+4. **Используйте Python напрямую** вместо исполняемого файла: `python main.py`
+   - Это самый надежный способ, так как Python может найти все библиотеки автоматически
 
 ## Проверка кода
 

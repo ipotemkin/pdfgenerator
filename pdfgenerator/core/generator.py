@@ -2,14 +2,50 @@
 
 import os
 import platform
+import sys
 from pathlib import Path
+
+# Попытка установить пути к системным библиотекам для macOS
+if platform.system() == "Darwin":
+    # Проверяем, запущено ли приложение из PyInstaller bundle
+    if getattr(sys, "frozen", False):
+        # Если это собранное приложение, библиотеки должны быть в той же папке
+        app_dir = os.path.dirname(sys.executable)
+        if os.path.exists(app_dir):
+            lib_paths = [app_dir]
+    else:
+        lib_paths = []
+    
+    # Добавляем пути Homebrew
+    brew_prefix = os.environ.get("HOMEBREW_PREFIX", "/opt/homebrew")
+    if os.path.exists(f"{brew_prefix}/lib"):
+        lib_paths.append(f"{brew_prefix}/lib")
+    
+    # Устанавливаем переменные окружения
+    if lib_paths:
+        lib_path = ":".join(lib_paths)
+        if "DYLD_LIBRARY_PATH" in os.environ:
+            os.environ["DYLD_LIBRARY_PATH"] = f"{lib_path}:{os.environ['DYLD_LIBRARY_PATH']}"
+        else:
+            os.environ["DYLD_LIBRARY_PATH"] = lib_path
+        
+        if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
+            os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = f"{lib_path}:{os.environ['DYLD_FALLBACK_LIBRARY_PATH']}"
+        else:
+            os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = lib_path
 
 try:
     from weasyprint import CSS, HTML  # type: ignore
     from weasyprint.text.fonts import FontConfiguration  # type: ignore
-except ImportError:
+except ImportError as e:
     print("Ошибка: библиотека WeasyPrint не установлена.")
     print("Установите её командой: pip install weasyprint")
+    if platform.system() == "Darwin":
+        print("\nТакже убедитесь, что установлены системные библиотеки:")
+        print("brew install cairo pango gdk-pixbuf libffi glib")
+        print("\nЕсли библиотеки установлены, но ошибка сохраняется,")
+        print("попробуйте установить переменные окружения:")
+        print("export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH")
     raise
 
 

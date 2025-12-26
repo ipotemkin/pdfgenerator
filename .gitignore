@@ -1,8 +1,14 @@
+.DS_Store
+
 prompts/
 venv/
 output/*
+dist/
+build/
 
 .mypy_cache/
 .ruff_cache/
 
 __pycache__/
+
+*.spec
