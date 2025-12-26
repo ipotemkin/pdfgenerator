@@ -1,0 +1,41 @@
+[
+  {
+    "invoice_id": "INV-001",
+    "date": "2024-01-15",
+    "customer_name": "Иван Петров",
+    "customer_address": "г. Москва, ул. Ленина, д. 10",
+    "items": [
+      {"name": "Услуга 1", "quantity": 2, "price": 1500.00},
+      {"name": "Услуга 2", "quantity": 1, "price": 3000.00}
+    ],
+    "total": 6000.00,
+    "tax": 1200.00,
+    "grand_total": 7200.00
+  },
+  {
+    "invoice_id": "INV-002",
+    "date": "2024-01-20",
+    "customer_name": "Мария Сидорова",
+    "customer_address": "г. Санкт-Петербург, пр. Невский, д. 25",
+    "items": [
+      {"name": "Товар А", "quantity": 5, "price": 500.00},
+      {"name": "Товар Б", "quantity": 3, "price": 800.00}
+    ],
+    "total": 4900.00,
+    "tax": 980.00,
+    "grand_total": 5880.00
+  },
+  {
+    "invoice_id": "INV-003",
+    "date": "2024-02-01",
+    "customer_name": "Алексей Иванов",
+    "customer_address": "г. Новосибирск, ул. Красный проспект, д. 5",
+    "items": [
+      {"name": "Консультация", "quantity": 1, "price": 5000.00}
+    ],
+    "total": 5000.00,
+    "tax": 1000.00,
+    "grand_total": 6000.00
+  }
+]
+
