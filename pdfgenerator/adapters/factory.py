@@ -1,15 +1,23 @@
 """Фабрика для создания адаптеров."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .base import DataAdapter
-from .csv_adapter import CSVAdapter
-from .json_adapter import JSONAdapter
-from .xlsx_adapter import XLSXAdapter
+
+if TYPE_CHECKING:
+    from .csv_adapter import CSVAdapter
+    from .json_adapter import JSONAdapter
+    from .xlsx_adapter import XLSXAdapter
 
 
 def get_adapter(file_path: Path) -> DataAdapter:
     """Получить подходящий адаптер для файла."""
+    # Ленивый импорт адаптеров для ускорения запуска
+    from .csv_adapter import CSVAdapter
+    from .json_adapter import JSONAdapter
+    from .xlsx_adapter import XLSXAdapter
+
     adapters: list[DataAdapter] = [
         JSONAdapter(),
         CSVAdapter(),

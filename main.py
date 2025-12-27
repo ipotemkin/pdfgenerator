@@ -3,7 +3,7 @@
 
 from typing import Any, Optional
 
-from pdfgenerator.core import FileManager, PDFGenerator
+from pdfgenerator.core import FileManager
 from pdfgenerator.templates import TemplateRenderer
 from pdfgenerator.ui import Menu
 
@@ -22,9 +22,9 @@ def find_invoice_key(data: list[dict[str, Any]]) -> Optional[str]:
 def main():
     """Основная функция программы."""
     file_manager = FileManager()
-    pdf_generator = PDFGenerator()
     template_renderer = TemplateRenderer()
-    Menu()
+    # PDFGenerator создаем только когда нужно генерировать PDF
+    pdf_generator = None
 
     print("\n" + "=" * 60)
     print("  ГЕНЕРАТОР PDF ДОКУМЕНТОВ")
@@ -128,6 +128,12 @@ def main():
     print(f"\nГенерация PDF для invoice ID: {selected_invoice_index[1]}...")
 
     try:
+        # Ленивая загрузка PDFGenerator только когда нужно
+        if pdf_generator is None:
+            from pdfgenerator.core.generator import PDFGenerator
+
+            pdf_generator = PDFGenerator()
+
         html_content = template_renderer.render(template, invoice_data)
         invoice_id = str(
             invoice_data.get(invoice_key, invoice_index + 1)

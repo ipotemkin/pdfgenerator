@@ -3,8 +3,6 @@
 from pathlib import Path
 from typing import Any
 
-from ..adapters import get_adapter
-
 
 class FileManager:
     """Класс для управления файлами данных и шаблонов."""
@@ -28,18 +26,9 @@ class FileManager:
         """Получить список всех файлов данных."""
         data_files: list[Path] = []
         if self.data_dir.exists():
-            # Получаем все расширения из адаптеров
-            from ..adapters import (
-                CSVAdapter,
-                JSONAdapter,
-                XLSXAdapter,
-            )
-
-            adapters = [JSONAdapter(), CSVAdapter(), XLSXAdapter()]
-            extensions = set()
-            for adapter in adapters:
-                extensions.update(adapter.supported_extensions)
-
+            # Используем фиксированный список расширений для ускорения
+            # без импорта адаптеров при старте
+            extensions = [".json", ".csv", ".xlsx"]
             for ext in extensions:
                 data_files.extend(self.data_dir.glob(f"*{ext}"))
         return sorted(data_files)
@@ -53,6 +42,9 @@ class FileManager:
 
     def load_data_file(self, file_path: Path) -> list[dict[str, Any]]:
         """Загрузить данные из файла."""
+        # Ленивый импорт адаптеров только когда нужно читать файл
+        from ..adapters import get_adapter
+
         adapter = get_adapter(file_path)
         return adapter.read(file_path)
 
